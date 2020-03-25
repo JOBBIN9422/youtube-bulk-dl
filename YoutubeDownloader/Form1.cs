@@ -98,10 +98,12 @@ namespace YoutubeDownloader
             if (item.SuccessfulDownload)
             {
                 SuccessListBox.Items.Add(item);
+                SuccessCountTextBox.Text = SuccessListBox.Items.Count.ToString();
             }
             else
             {
                 FailListBox.Items.Add(item);
+                FailCountTextBox.Text = FailListBox.Items.Count.ToString();
             }
         }
 

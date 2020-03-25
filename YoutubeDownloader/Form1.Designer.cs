@@ -42,6 +42,8 @@ namespace YoutubeDownloader
             this.label1 = new System.Windows.Forms.Label();
             this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.DownloadWorker = new System.ComponentModel.BackgroundWorker();
+            this.SuccessCountTextBox = new System.Windows.Forms.TextBox();
+            this.FailCountTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,25 +53,28 @@ namespace YoutubeDownloader
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.label2, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.SuccessListBox, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.ChooseDownloadPathButton, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.UrlTextBox, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.DownloadPathTextBox, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.DownloadButton, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.FailListBox, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.ProgressBar, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.SuccessListBox, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.SuccessCountTextBox, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.FailListBox, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.FailCountTextBox, 1, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 478);
             this.tableLayoutPanel1.TabIndex = 0;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
@@ -89,7 +94,7 @@ namespace YoutubeDownloader
             // 
             this.SuccessListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SuccessListBox.FormattingEnabled = true;
-            this.SuccessListBox.Location = new System.Drawing.Point(3, 103);
+            this.SuccessListBox.Location = new System.Drawing.Point(3, 129);
             this.SuccessListBox.Name = "SuccessListBox";
             this.SuccessListBox.Size = new System.Drawing.Size(394, 346);
             this.SuccessListBox.TabIndex = 9;
@@ -138,7 +143,7 @@ namespace YoutubeDownloader
             // 
             this.FailListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FailListBox.FormattingEnabled = true;
-            this.FailListBox.Location = new System.Drawing.Point(403, 103);
+            this.FailListBox.Location = new System.Drawing.Point(403, 129);
             this.FailListBox.Name = "FailListBox";
             this.FailListBox.Size = new System.Drawing.Size(394, 346);
             this.FailListBox.TabIndex = 10;
@@ -169,11 +174,29 @@ namespace YoutubeDownloader
             // 
             this.DownloadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DownloadWorker_DoWork);
             // 
+            // SuccessCountTextBox
+            // 
+            this.SuccessCountTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SuccessCountTextBox.Location = new System.Drawing.Point(3, 103);
+            this.SuccessCountTextBox.Name = "SuccessCountTextBox";
+            this.SuccessCountTextBox.ReadOnly = true;
+            this.SuccessCountTextBox.Size = new System.Drawing.Size(394, 20);
+            this.SuccessCountTextBox.TabIndex = 14;
+            // 
+            // FailCountTextBox
+            // 
+            this.FailCountTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FailCountTextBox.Location = new System.Drawing.Point(403, 103);
+            this.FailCountTextBox.Name = "FailCountTextBox";
+            this.FailCountTextBox.ReadOnly = true;
+            this.FailCountTextBox.Size = new System.Drawing.Size(394, 20);
+            this.FailCountTextBox.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 478);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "YouTube Downloader";
@@ -197,6 +220,8 @@ namespace YoutubeDownloader
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar ProgressBar;
+        private System.Windows.Forms.TextBox SuccessCountTextBox;
+        private System.Windows.Forms.TextBox FailCountTextBox;
     }
 }
 
