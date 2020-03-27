@@ -33,7 +33,6 @@ namespace YoutubeAPIWrapper
             _ytDownloader = YouTube.Default;
         }
 
-        public int ProcessedItems { get; private set; }
 
         private async Task<string> DownloadVideoAsync(string url, string dlPath)
         {
@@ -48,6 +47,8 @@ namespace YoutubeAPIWrapper
             {
                 videoTitleName = await GetVideoTitle(url);
             }
+
+            //remove suffix added by library
             videoTitleName = videoTitleName.Replace(" - YouTube", string.Empty);
 
             //write the downloaded media file to the temp assets dir
@@ -143,7 +144,7 @@ namespace YoutubeAPIWrapper
             List<string> videoUrls = await GetPlaylistUrlsAsync(playlistUrl);
             List<DownloadItem> videoFiles = new List<DownloadItem>();
 
-            ProcessedItems = 0;
+            int processedItems = 0;
 
             //attempt to download each video in the playlist
             foreach (string url in videoUrls)
@@ -179,12 +180,12 @@ namespace YoutubeAPIWrapper
                     item.SuccessfulDownload = false;
                 }
 
-                ProcessedItems++;
+                processedItems++;
                 videoFiles.Add(item);
                 progress.Report(new ProgressItem()
                 {
                     LastDownload = item,
-                    Percentage = (int)(ProcessedItems / (double)videoUrls.Count * 100)
+                    Percentage = (int)(processedItems / (double)videoUrls.Count * 100)
                 });
             }
 
