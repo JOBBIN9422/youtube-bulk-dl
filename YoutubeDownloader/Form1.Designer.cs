@@ -33,17 +33,17 @@ namespace YoutubeDownloader
             this.DownloadPathFolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.SuccessListBox = new System.Windows.Forms.ListBox();
             this.ChooseDownloadPathButton = new System.Windows.Forms.Button();
             this.UrlTextBox = new System.Windows.Forms.TextBox();
             this.DownloadPathTextBox = new System.Windows.Forms.TextBox();
             this.DownloadButton = new System.Windows.Forms.Button();
-            this.FailListBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ProgressBar = new System.Windows.Forms.ProgressBar();
-            this.DownloadWorker = new System.ComponentModel.BackgroundWorker();
+            this.SuccessListBox = new System.Windows.Forms.ListBox();
             this.SuccessCountTextBox = new System.Windows.Forms.TextBox();
+            this.FailListBox = new System.Windows.Forms.ListBox();
             this.FailCountTextBox = new System.Windows.Forms.TextBox();
+            this.DownloadWorker = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,22 +83,12 @@ namespace YoutubeDownloader
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(541, 84);
+            this.label2.Location = new System.Drawing.Point(542, 84);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(117, 16);
+            this.label2.Size = new System.Drawing.Size(116, 16);
             this.label2.TabIndex = 12;
             this.label2.Text = "Failed Downloads";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // SuccessListBox
-            // 
-            this.SuccessListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SuccessListBox.FormattingEnabled = true;
-            this.SuccessListBox.Location = new System.Drawing.Point(3, 129);
-            this.SuccessListBox.Name = "SuccessListBox";
-            this.SuccessListBox.Size = new System.Drawing.Size(394, 346);
-            this.SuccessListBox.TabIndex = 9;
-            this.SuccessListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SuccessListBox_MouseDoubleClick);
             // 
             // ChooseDownloadPathButton
             // 
@@ -139,16 +129,6 @@ namespace YoutubeDownloader
             this.DownloadButton.UseVisualStyleBackColor = true;
             this.DownloadButton.Click += new System.EventHandler(this.DownloadButton_Click);
             // 
-            // FailListBox
-            // 
-            this.FailListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FailListBox.FormattingEnabled = true;
-            this.FailListBox.Location = new System.Drawing.Point(403, 129);
-            this.FailListBox.Name = "FailListBox";
-            this.FailListBox.Size = new System.Drawing.Size(394, 346);
-            this.FailListBox.TabIndex = 10;
-            this.FailListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FailListBox_MouseDoubleClick);
-            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -156,7 +136,7 @@ namespace YoutubeDownloader
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(128, 84);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 16);
+            this.label1.Size = new System.Drawing.Size(143, 16);
             this.label1.TabIndex = 11;
             this.label1.Text = "Successful Downloads";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -171,9 +151,15 @@ namespace YoutubeDownloader
             this.ProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.ProgressBar.TabIndex = 13;
             // 
-            // DownloadWorker
+            // SuccessListBox
             // 
-            this.DownloadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DownloadWorker_DoWork);
+            this.SuccessListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SuccessListBox.FormattingEnabled = true;
+            this.SuccessListBox.Location = new System.Drawing.Point(3, 129);
+            this.SuccessListBox.Name = "SuccessListBox";
+            this.SuccessListBox.Size = new System.Drawing.Size(394, 346);
+            this.SuccessListBox.TabIndex = 9;
+            this.SuccessListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SuccessListBox_MouseDoubleClick);
             // 
             // SuccessCountTextBox
             // 
@@ -184,6 +170,16 @@ namespace YoutubeDownloader
             this.SuccessCountTextBox.Size = new System.Drawing.Size(394, 20);
             this.SuccessCountTextBox.TabIndex = 14;
             // 
+            // FailListBox
+            // 
+            this.FailListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FailListBox.FormattingEnabled = true;
+            this.FailListBox.Location = new System.Drawing.Point(403, 129);
+            this.FailListBox.Name = "FailListBox";
+            this.FailListBox.Size = new System.Drawing.Size(394, 346);
+            this.FailListBox.TabIndex = 10;
+            this.FailListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FailListBox_MouseDoubleClick);
+            // 
             // FailCountTextBox
             // 
             this.FailCountTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -192,6 +188,10 @@ namespace YoutubeDownloader
             this.FailCountTextBox.ReadOnly = true;
             this.FailCountTextBox.Size = new System.Drawing.Size(394, 20);
             this.FailCountTextBox.TabIndex = 16;
+            // 
+            // DownloadWorker
+            // 
+            this.DownloadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DownloadWorker_DoWork);
             // 
             // Form1
             // 
