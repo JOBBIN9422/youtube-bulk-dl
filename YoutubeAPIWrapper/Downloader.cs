@@ -22,6 +22,7 @@ namespace YoutubeAPIWrapper
 
         public Downloader()
         {
+            //create YouTube API client w/ key from config
             _ytService = new YouTubeService(
                 new BaseClientService.Initializer()
                 {
@@ -33,8 +34,10 @@ namespace YoutubeAPIWrapper
             _ytDownloader = new YouTubeExplodeDownloader();
         }
 
+        //convert the file indicated by 'videoFilePath' to mp3 (return the output filename)
         public string ConvertToMp3(string videoFilePath)
         {
+            //determine destination dir and I/O filenames
             string dlDirectory = Path.GetDirectoryName(videoFilePath);
             string baseFilename = Path.GetFileNameWithoutExtension(videoFilePath);
             string outputFilename = Path.Combine(dlDirectory, $"{baseFilename}.mp3");
@@ -45,76 +48,75 @@ namespace YoutubeAPIWrapper
                 outputFilename = Path.Combine(dlDirectory, $"{baseFilename}-{Guid.NewGuid().ToString().Substring(0, 8)}.mp3"); 
             }
 
+            //convert from source to mp3 via MediaToolkit
             MediaFile videoFile = new MediaFile() { Filename = videoFilePath };
             MediaFile mp3File = new MediaFile() { Filename = outputFilename };
-
             using (var engine = new Engine())
             {
                 engine.Convert(videoFile, mp3File);
             }
+
+            //clean up the original video file
             if (File.Exists(videoFilePath))
             {
-                //remove the source file 
                 File.Delete(videoFilePath);
             }
 
             return outputFilename;
         }
 
+        //download an MP3 file for the video indicated by videoUrl into downloadDir
         public async Task<DownloadItem> DownloadAudio(string videoUrl, string downloadDir, IProgress<DownloadItem> progress)
         {
-            //define metadata params for the item to be returned 
-            string mp3FilePath = string.Empty;
-            string displayName = string.Empty;
-            bool success = false;
+            DownloadItem item = new DownloadItem
+            {
+                SourceUrl = videoUrl,
+            };
 
             string videoFilePath = string.Empty;
             try
             {
                 //attempt to download the video file and convert it to audio format
                 videoFilePath = await _ytDownloader.DownloadVideoAsync(videoUrl, downloadDir);
-                await Task.Run(() => mp3FilePath = ConvertToMp3(videoFilePath));
-                displayName = Path.GetFileNameWithoutExtension(mp3FilePath);
+                await Task.Run(() => item.Path = ConvertToMp3(videoFilePath));
+                item.DisplayName = Path.GetFileNameWithoutExtension(item.Path);
+                item.SuccessfulDownload = true;
             }
             catch (Exception)
             {
                 //clean up files if necessary
-                if (File.Exists(mp3FilePath))
+                if (File.Exists(item.Path))
                 {
-                    File.Delete(mp3FilePath);
+                    File.Delete(item.Path);
                 }
                 if (File.Exists(videoFilePath))
                 {
                     File.Delete(videoFilePath);
                 }
-                success = false;
+                item.SuccessfulDownload = false;
 
                 //on error, set title accordingly (don't have a local file to set name to)
-                displayName = await GetVideoTitle(videoUrl);
-                if (string.IsNullOrEmpty(displayName))
+                item.DisplayName = await GetVideoTitle(videoUrl);
+                if (string.IsNullOrEmpty(item.DisplayName))
                 {
-                    displayName = "Invalid URL";
+                    item.DisplayName = "Invalid URL";
                 }
             }
-
-            DownloadItem item = new DownloadItem()
-            {
-                Path = mp3FilePath,
-                SuccessfulDownload = success,
-                DisplayName = displayName
-            };
 
             progress.Report(item);
             return item;
         }
 
+        //Download all of the videos indicated by 'playlistUrl' to 'downloadDir'
         public async Task<List<DownloadItem>> DownloadPlaylistAudio(string playlistUrl, string downloadDir, IProgress<ProgressItem> progress)
         {
+            //break if not a playlist 
             if (!(UrlIsPlaylist(playlistUrl)))
             {
                 throw new ArgumentException("The given URL did not refer to a YouTube playlist.");
             }
 
+            //fetch the video URLs for the given playlist via YouTube API
             List<string> videoUrls = await GetPlaylistUrlsAsync(playlistUrl);
             List<DownloadItem> videoFiles = new List<DownloadItem>();
 
@@ -126,10 +128,7 @@ namespace YoutubeAPIWrapper
                 //create metadata object for current download
                 DownloadItem item = new DownloadItem
                 {
-                    Path = string.Empty,
                     SourceUrl = url,
-                    SuccessfulDownload = false,
-                    DisplayName = string.Empty
                 };
 
                 try
@@ -154,8 +153,10 @@ namespace YoutubeAPIWrapper
                     item.SuccessfulDownload = false;
                 }
 
-                processedItems++;
                 videoFiles.Add(item);
+
+                //report current download progress
+                processedItems++;
                 progress.Report(new ProgressItem()
                 {
                     LastDownload = item,
@@ -166,6 +167,7 @@ namespace YoutubeAPIWrapper
             return videoFiles;
         }
 
+        //get the title for the YouTube video indicated by 'url' via the YouTube API
         public async Task<string> GetVideoTitle(string url)
         {
             var videoRequest = _ytService.Videos.List("snippet");
@@ -187,7 +189,7 @@ namespace YoutubeAPIWrapper
         }
 
         
-
+        //retrieve a list of video URLs for the playlist indicated by 'playlistUrl' via the YouTube API
         public async Task<List<string>> GetPlaylistUrlsAsync(string playlistUrl)
         {
             List<string> urls = new List<string>();
