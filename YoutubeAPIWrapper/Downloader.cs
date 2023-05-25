@@ -18,7 +18,7 @@ namespace YoutubeAPIWrapper
     {
         private readonly YouTubeService _ytService;
 
-        private readonly YouTube _ytDownloader;
+        private readonly IYouTubeDownloader _ytDownloader;
 
         public Downloader()
         {
@@ -30,33 +30,7 @@ namespace YoutubeAPIWrapper
                 }
             );
 
-            _ytDownloader = YouTube.Default;
-        }
-
-
-        private async Task<string> DownloadVideoAsync(string url, string dlPath)
-        {
-            string videoDataFilename;
-            //download the youtube video data (usually .mp4 or .webm)
-            var video = await _ytDownloader.GetVideoAsync(url);
-            var videoData = await video.GetBytesAsync();
-
-            //rename the video if it does not have a useful name
-            string videoTitleName = video.FullName;
-            if (string.IsNullOrEmpty(videoTitleName) || videoTitleName.ToLower() == "youtube.mp4" || videoTitleName.ToLower() == "youtube.webm")
-            {
-                videoTitleName = await GetVideoTitle(url);
-            }
-
-            //remove suffix added by library
-            videoTitleName = videoTitleName.Replace(" - YouTube", string.Empty);
-
-            //write the downloaded media file to the temp assets dir
-            videoDataFilename = Path.Combine(dlPath, videoTitleName);
-            File.WriteAllBytes(videoDataFilename, videoData);
-
-            return videoDataFilename;
-
+            _ytDownloader = new YouTubeExplodeDownloader();
         }
 
         public string ConvertToMp3(string videoFilePath)
@@ -98,7 +72,7 @@ namespace YoutubeAPIWrapper
             try
             {
                 //attempt to download the video file and convert it to audio format
-                videoFilePath = await DownloadVideoAsync(videoUrl, downloadDir);
+                videoFilePath = await _ytDownloader.DownloadVideoAsync(videoUrl, downloadDir);
                 await Task.Run(() => mp3FilePath = ConvertToMp3(videoFilePath));
                 displayName = Path.GetFileNameWithoutExtension(mp3FilePath);
             }
@@ -161,7 +135,7 @@ namespace YoutubeAPIWrapper
                 try
                 {
                     //try to download the video and convert it to mp3 format
-                    string videoFile = await DownloadVideoAsync(url, downloadDir);
+                    string videoFile = await _ytDownloader.DownloadVideoAsync(url, downloadDir);
                     await Task.Run(() => item.Path = ConvertToMp3(videoFile));
 
                     item.SuccessfulDownload = true;

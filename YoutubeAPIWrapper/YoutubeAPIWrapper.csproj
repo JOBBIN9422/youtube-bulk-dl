@@ -247,8 +247,10 @@
     <Compile Include="Downloader.cs" />
     <Compile Include="DownloadItem.cs" />
     <Compile Include="IYouTubeDownloader.cs" />
+    <Compile Include="LibVideoDownloader.cs" />
     <Compile Include="ProgressItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="YouTubeExplodeDownloader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

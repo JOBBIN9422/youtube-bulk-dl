@@ -22,8 +22,11 @@ namespace YoutubeAPIWrapper
             //get highest quality audio-only stream
             var streamInfo = streamManifest.GetAudioOnlyStreams().OrderByDescending(s => s.Bitrate).First();
 
+            //generate filename (remove invalid filename chars)
+            string validVidName = string.Join("-", videoInfo.Title.Split(Path.GetInvalidFileNameChars()));
+            string downloadFilename = Path.Combine(dlPath, $"{validVidName}.{streamInfo.Container}");
+
             //download to file
-            string downloadFilename = Path.Combine(dlPath, $"{videoInfo.Title}.{streamInfo.Container}");
             await _ytClient.Videos.Streams.DownloadAsync(streamInfo, downloadFilename);
 
             return downloadFilename;
