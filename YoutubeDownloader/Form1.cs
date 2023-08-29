@@ -28,6 +28,7 @@ namespace YoutubeDownloader
             if (DownloadPathFolderBrowser.ShowDialog() == DialogResult.OK)
             {
                 DownloadPathTextBox.Text = DownloadPathFolderBrowser.SelectedPath;
+                LogToStatusBox($"Download path set to {DownloadPathFolderBrowser.SelectedPath}");
             }
         }
 
@@ -43,13 +44,16 @@ namespace YoutubeDownloader
             }
             else
             {
+                string url;
+                string dlPath;
                 try
                 {
-                    string url = UrlTextBox.Text;
-                    string dlPath = DownloadPathTextBox.Text;
+                    url = UrlTextBox.Text;
+                    dlPath = DownloadPathTextBox.Text;
 
                     DisableControls();
 
+                    LogToStatusBox($"Beginning download for {url}...");
                     if (Downloader.UrlIsPlaylist(url))
                     {
                         List<DownloadItem> items = await _downloader.DownloadPlaylistAudio(url, dlPath, new Progress<ProgressItem>(i => ReportProgress(i)));
@@ -57,18 +61,18 @@ namespace YoutubeDownloader
 
                     else
                     {
-                        DownloadItem item = await _downloader.DownloadAudio(url, dlPath, new Progress<DownloadItem>(i => DisplayItem(i)));
+                        DownloadItem item = await _downloader.DownloadAudio(url, dlPath, new Progress<DownloadItem>(i => DisplayDownloadItem(i)));
                     }
                 }
                 catch (Exception ex)
                 {
                     EnableControls();
                     MessageBox.Show($"Error: {ex.Message}", "Error");
+                    LogToStatusBox($"Error: {ex.Message}");
                     return;
                 }
 
                 EnableControls();
-                MessageBox.Show("The operation completed. Check the appropriate download lists.", "Finished");
             }
         }
 
@@ -88,20 +92,30 @@ namespace YoutubeDownloader
 
         private void ReportProgress(ProgressItem item)
         {
-            DisplayItem(item.LastDownload);
+            DisplayDownloadItem(item.LastDownload);
             ProgressBar.Value = item.Percentage;
             //this.Text = $"Progress: {item.Percentage}%";
         }
 
-        private void DisplayItem(DownloadItem item)
+        private void LogToStatusBox(string text)
+        {
+            string dateTimeStr = DateTime.Now.ToString("HH:mm:ss");
+            StatusTextBox.AppendText($"[{dateTimeStr}] {text}{Environment.NewLine}");
+        }
+
+        private void DisplayDownloadItem(DownloadItem item)
         {
             if (item.SuccessfulDownload)
             {
+                LogToStatusBox($"Successfully downloaded {item.DisplayName}.");
+
                 SuccessListBox.Items.Add(item);
                 SuccessCountTextBox.Text = SuccessListBox.Items.Count.ToString();
             }
             else
             {
+                LogToStatusBox($"Download failed for {item.DisplayName}.");
+
                 FailListBox.Items.Add(item);
                 FailCountTextBox.Text = FailListBox.Items.Count.ToString();
             }
